@@ -14,12 +14,11 @@ chemWordRecurse <- function(w, t, sym){
     if (nchar(w) == 0) {
       out[[length(out) + 1]] <<- unlist(t)
     }
-    for (i in 1:2) {
+    for (i in 1:min(2, nchar(w))) {
       if (substring(w, 1, i) %in% sym) {
-        Recall(substring(w, i+1), c(t, substring(w, 1, i)), sym)
+        Recall(substring(w, i + 1), c(t, substring(w, 1, i)), sym)
       }
     }
-    return(out)
   }
   chemWordRecurseInternal(w, t, sym)
   return(out)
