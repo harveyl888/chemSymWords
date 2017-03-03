@@ -8,13 +8,12 @@ chemWord <- function(w, sym=elements) {
   return (chemWordRecurse(w, list(), sym))
 }
 
-chemWordRecurse <- local({
+chemWordRecurse <- function(w, t, sym){
   out <- list()
-  function(w, t, sym) {
+  chemWordRecurseInternal <- function(w, t, sym) {
     if (nchar(w) == 0) {
-      out[[length(out) + 1]] <<-unlist(t)
+      out[[length(out) + 1]] <<- unlist(t)
     }
-
     for (i in 1:2) {
       if (substring(w, 1, i) %in% sym) {
         Recall(substring(w, i+1), c(t, substring(w, 1, i)), sym)
@@ -22,4 +21,7 @@ chemWordRecurse <- local({
     }
     return(out)
   }
-})
+  chemWordRecurseInternal(w, t, sym)
+  return(out)
+}
+
