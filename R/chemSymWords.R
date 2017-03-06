@@ -34,7 +34,7 @@ chemWord <- function(w, output='min', sym=elements) {
 #'
 #' @param w Character.  Text to search for chemical elements
 #' @param t List.  Running list of partial matches for current search path
-#' @param sym Data frame.  A data frame containing chemical information
+#' @param sym Character vector.  A vector of chemical symbols
 #'
 #' @return List of results.  Each list item refers to a positive result in representing the
 #'   input string as a series of elements.  List items are vectors corresponding to row
