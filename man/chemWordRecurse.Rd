@@ -11,7 +11,7 @@ chemWordRecurse(w, t, sym = elements)
 
 \item{t}{List.  Running list of partial matches for current search path}
 
-\item{sym}{Data frame.  A data frame containing chemical information}
+\item{sym}{Character vector.  A vector of chemical symbols}
 }
 \value{
 List of results.  Each list item refers to a positive result in representing the
