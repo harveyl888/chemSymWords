@@ -3,18 +3,28 @@
 #' Represent a string using chemical elements
 #'
 #' @param w Character.  A word to convert to chemical elements
+#' @param output Character.  Specify the output.  \code{min} returns the fewest elements,
+#'   \code{max} returns the most elements, \code{list} returns a list of all hits
 #' @param sym Data Frame.  A data frame containing chemical information.  Defaults to elements
 #'
 #' @return Character vector of elements if successful or FALSE if not all characters can be assinged to elements
 #'
 #' @export
-chemWord <- function(w, sym=elements) {
+chemWord <- function(w, output='min', sym=elements) {
+  if (!output %in% c('min', 'max', 'list')) output <- 'list'
   symbolList <- chemWordRecurse(w, list(), sym$Symbol)
   if (length(symbolList) == 0) {
     return(FALSE)
   } else {
-    ref <- which.min(lapply(symbolList, length))
-    return(sym$Symbol[symbolList[[ref]]])
+    if (output == 'min') {
+      ref <- which.min(lapply(symbolList, length))
+      return(sym$Symbol[symbolList[[ref]]])
+    } else if (output == 'max') {
+      ref <- which.max(lapply(symbolList, length))
+      return(sym$Symbol[symbolList[[ref]]])
+    } else {
+      return(sapply(symbolList, function(x) sym$Symbol[x]))
+    }
   }
 }
 

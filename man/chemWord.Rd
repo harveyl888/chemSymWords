@@ -4,10 +4,13 @@
 \alias{chemWord}
 \title{Represent a string using chemical elements}
 \usage{
-chemWord(w, sym = elements)
+chemWord(w, output = "min", sym = elements)
 }
 \arguments{
 \item{w}{Character.  A word to convert to chemical elements}
+
+\item{output}{Character.  Specify the output.  \code{min} returns the fewest elements,
+\code{max} returns the most elements, \code{list} returns a list of all hits}
 
 \item{sym}{Data Frame.  A data frame containing chemical information.  Defaults to elements}
 }
