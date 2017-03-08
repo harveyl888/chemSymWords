@@ -6,12 +6,17 @@
 #' @param output Character.  Specify the output.  \code{min} returns the fewest elements,
 #'   \code{max} returns the most elements, \code{list} returns a list of all hits
 #' @param sym Data Frame.  A data frame containing chemical information.  Defaults to elements
+#' @param additional Data Frame.  Optional additional element table.  Data frame which must
+#'   have a \code{Symbol} column containing the chemical symbol
 #'
 #' @return Character vector of elements if successful or FALSE if not all characters can be assinged to elements
 #'
+#' @importFrom dplyr bind_rows
+#'
 #' @export
-chemWord <- function(w, output='min', sym=elements) {
-  if (!output %in% c('min', 'max', 'list')) output <- 'list'
+chemWord <- function(w, output='min', sym=elements, additional=NULL) {
+  if (!output %in% c('min', 'max', 'list')) output <- 'min'  ## default to min
+  if (!is.null(additional)) sym <- bind_rows(additional, sym)  ## add additional elements
   symbolList <- chemWordRecurse(w, list(), sym$Symbol)
   if (length(symbolList) == 0) {
     return(FALSE)
@@ -65,14 +70,19 @@ chemWordRecurse <- function(w, t, sym=elements) {
 #'
 #' @param w Character.  A word to convert to chemical elements
 #' @param sym Data Frame.  A data frame containing chemical information.  Defaults to elements
+#' @param additional Data Frame.  Optional additional element table.  Data frame which must
+#'   have a \code{Symbol} column containing the chemical symbol and can also contain
+#'   \code{Atomic_Number}, \code{Name} and \code{Atomic_Mass} for inclusion in the PNG
 #' @param f Character.  Filename for output file (including path)
 #'
 #' @return Boolean.  True if file generated, false if word could not be represented by chemical elements
 #'
 #' @import grid
+#' @importFrom dplyr bind_rows
 #'
 #' @export
-chemWordPNG <- function(w, sym=elements, f='chemWord.png') {
+chemWordPNG <- function(w, sym=elements, additional=NULL, f='chemWord.png') {
+  if (!is.null(additional)) sym <- bind_rows(additional, sym)  ## add additional elements
   symbolList <- chemWordRecurse(w, list(), sym$Symbol)
   if (length(symbolList) == 0) {
     return(FALSE)
@@ -90,7 +100,7 @@ chemWordPNG <- function(w, sym=elements, f='chemWord.png') {
       xC <- boxSize / 2 + (i-1)*boxSize + ((i-1)*2+1)*0.03*boxSize
       yC <- boxSize / 2
       grid.rect(x = xC, y = yC, width = boxSize, height = boxSize, default.units = "points")
-      grid.text(label = sym$Symbol[chemRef[i]],
+      grid.text(label = ifelse(is.na(sym$Symbol[chemRef[i]]), '', sym$Symbol[chemRef[i]]),
                 x = xC,
                 y = yC,
                 just = c('center', 'center'),
@@ -98,7 +108,7 @@ chemWordPNG <- function(w, sym=elements, f='chemWord.png') {
                 gp=gpar(col='black', fontsize = 0.33 * boxSize))  ## Chemical Symbol
       xTop <- xC - boxSize * 0.45
       yTop <- boxSize * 0.9
-      grid.text(label = sym$Atomic_Number[chemRef[i]],
+      grid.text(label = ifelse(is.na(sym$Atomic_Number[chemRef[i]]), '', sym$Atomic_Number[chemRef[i]]),
                 x = xTop,
                 y = yTop,
                 just = c('left', 'center'),
@@ -106,7 +116,7 @@ chemWordPNG <- function(w, sym=elements, f='chemWord.png') {
                 gp = gpar(col = 'black', fontsize = 0.15 * boxSize))  ## top line - atomic number
       xBottom <- xC
       yBottom <- boxSize * 0.15
-      grid.text(label = sym$Name[chemRef[i]],
+      grid.text(label = ifelse(is.na(sym$Name[chemRef[i]]), '', sym$Name[chemRef[i]]),
                 x = xBottom,
                 y = yBottom,
                 just = c('center', 'center'),

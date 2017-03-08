@@ -4,12 +4,16 @@
 \alias{chemWordPNG}
 \title{Create a PNG representation using chemical elements}
 \usage{
-chemWordPNG(w, sym = elements, f = "chemWord.png")
+chemWordPNG(w, sym = elements, additional = NULL, f = "chemWord.png")
 }
 \arguments{
 \item{w}{Character.  A word to convert to chemical elements}
 
 \item{sym}{Data Frame.  A data frame containing chemical information.  Defaults to elements}
+
+\item{additional}{Data Frame.  Optional additional element table.  Data frame which must
+have a \code{Symbol} column containing the chemical symbol and can also contain
+\code{Atomic_Number}, \code{Name} and \code{Atomic_Mass} for inclusion in the PNG}
 
 \item{f}{Character.  Filename for output file (including path)}
 }

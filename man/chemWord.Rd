@@ -4,7 +4,7 @@
 \alias{chemWord}
 \title{Represent a string using chemical elements}
 \usage{
-chemWord(w, output = "min", sym = elements)
+chemWord(w, output = "min", sym = elements, additional = NULL)
 }
 \arguments{
 \item{w}{Character.  A word to convert to chemical elements}
@@ -13,6 +13,9 @@ chemWord(w, output = "min", sym = elements)
 \code{max} returns the most elements, \code{list} returns a list of all hits}
 
 \item{sym}{Data Frame.  A data frame containing chemical information.  Defaults to elements}
+
+\item{additional}{Data Frame.  Optional additional element table.  Data frame which must
+have a \code{Symbol} column containing the chemical symbol}
 }
 \value{
 Character vector of elements if successful or FALSE if not all characters can be assinged to elements

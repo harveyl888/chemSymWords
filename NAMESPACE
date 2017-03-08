@@ -3,3 +3,4 @@
 export(chemWord)
 export(chemWordPNG)
 import(grid)
+importFrom(dplyr,bind_rows)
