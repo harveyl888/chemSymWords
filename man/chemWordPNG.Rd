@@ -6,7 +6,8 @@
 \usage{
 chemWordPNG(w, sym = elements, line1 = c("Name", "center"),
   line2 = c("Atomic_Number", "center"), line3 = c("Atomic_Mass", "center"),
-  additional = NULL, rounded = FALSE, f = "chemWord.png")
+  additional = NULL, colorInvert = FALSE, rounded = FALSE,
+  f = "chemWord.png")
 }
 \arguments{
 \item{w}{Character.  A word to convert to chemical elements}
@@ -26,7 +27,10 @@ output set it to c(NA, NA)}
 have a \code{Symbol} column containing the chemical symbol and can also contain
 \code{Atomic_Number}, \code{Name} and \code{Atomic_Mass} for inclusion in the PNG}
 
-\item{rounded}{Boolean.  Rounded box corners}
+\item{colorInvert}{Boolean.  Invert colors.  If true then elements will be white colored on a
+black background.  Default is false (black text on white background)}
+
+\item{rounded}{Boolean.  Rounded box corners.  Default is false}
 
 \item{f}{Character.  Filename for output file (including path)}
 }

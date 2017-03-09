@@ -79,7 +79,9 @@ chemWordRecurse <- function(w, t, sym=elements) {
 #' @param additional Data Frame.  Optional additional element table.  Data frame which must
 #'   have a \code{Symbol} column containing the chemical symbol and can also contain
 #'   \code{Atomic_Number}, \code{Name} and \code{Atomic_Mass} for inclusion in the PNG
-#' @param rounded Boolean.  Rounded box corners
+#' @param colorInvert Boolean.  Invert colors.  If true then elements will be white colored on a
+#'   black background.  Default is false (black text on white background)
+#' @param rounded Boolean.  Rounded box corners.  Default is false
 #' @param f Character.  Filename for output file (including path)
 #'
 #' @return Boolean.  True if file generated, false if word could not be represented by chemical elements
@@ -94,6 +96,7 @@ chemWordPNG <- function(w,
                         line2=c('Atomic_Number', 'center'),
                         line3=c('Atomic_Mass', 'center'),
                         additional=NULL,
+                        colorInvert = FALSE,
                         rounded = FALSE,
                         f='chemWord.png') {
   if (!is.null(additional)) sym <- bind_rows(additional, sym)  ## add additional elements
@@ -104,6 +107,14 @@ chemWordPNG <- function(w,
     if (!x[2] %in% c('left', 'right', 'centre', 'center')) x[2] <- 'center'
     x
   })
+
+  if (colorInvert) {
+    backCol <- 'black'
+    foreCol <- 'white'
+  } else {
+    backCol <- 'white'
+    foreCol <- 'black'
+  }
 
   symbolList <- chemWordRecurse(w, list(), sym$Symbol)
   if (length(symbolList) == 0) {
@@ -122,16 +133,26 @@ chemWordPNG <- function(w,
       xC <- boxSize / 2 + (i-1)*boxSize + ((i-1)*2+1)*0.03*boxSize
       yC <- boxSize / 2
       if (rounded) {
-        grid.roundrect(x = xC, y = yC, width = boxSize, height = boxSize, default.units = "points")
+        grid.roundrect(x = xC,
+                       y = yC,
+                       width = boxSize,
+                       height = boxSize,
+                       default.units = "points",
+                       gp=gpar(col=foreCol, fill=backCol))
       } else {
-        grid.rect(x = xC, y = yC, width = boxSize, height = boxSize, default.units = "points")
+        grid.rect(x = xC,
+                  y = yC,
+                  width = boxSize,
+                  height = boxSize,
+                  default.units = "points",
+                  gp=gpar(col=foreCol, fill=backCol))
       }
       grid.text(label = ifelse(is.na(sym$Symbol[chemRef[i]]), '', sym$Symbol[chemRef[i]]),
                 x = xC,
                 y = yC,
                 just = c('center', 'center'),
                 default.units = "points",
-                gp=gpar(col='black', fontsize = 0.33 * boxSize))  ## Chemical Symbol
+                gp=gpar(col=foreCol, fontsize = 0.33 * boxSize))  ## Chemical Symbol
       lapply(seq_along(l.text), function(x) {  ## Apply other labels
         if(l.text[[x]][2] == 'left') {
           xText <- xC - boxSize * 0.45
@@ -152,7 +173,7 @@ chemWordPNG <- function(w,
                   y = yText,
                   just = c(l.text[[x]][2], 'center'),
                   default.units = 'points',
-                  gp = gpar(col = 'black', fontsize = 0.15 * boxSize))  ## top line - atomic number
+                  gp = gpar(col = foreCol, fontsize = 0.15 * boxSize))  ## top line - atomic number
       })
     }
     dev.off()
