@@ -79,6 +79,7 @@ chemWordRecurse <- function(w, t, sym=elements) {
 #' @param additional Data Frame.  Optional additional element table.  Data frame which must
 #'   have a \code{Symbol} column containing the chemical symbol and can also contain
 #'   \code{Atomic_Number}, \code{Name} and \code{Atomic_Mass} for inclusion in the PNG
+#' @param rounded Boolean.  Rounded box corners
 #' @param f Character.  Filename for output file (including path)
 #'
 #' @return Boolean.  True if file generated, false if word could not be represented by chemical elements
@@ -93,6 +94,7 @@ chemWordPNG <- function(w,
                         line2=c('Atomic_Number', 'center'),
                         line3=c('Atomic_Mass', 'center'),
                         additional=NULL,
+                        rounded = FALSE,
                         f='chemWord.png') {
   if (!is.null(additional)) sym <- bind_rows(additional, sym)  ## add additional elements
 
@@ -119,7 +121,11 @@ chemWordPNG <- function(w,
     for (i in 1:nboxes) {  ## loop through each identified symbol
       xC <- boxSize / 2 + (i-1)*boxSize + ((i-1)*2+1)*0.03*boxSize
       yC <- boxSize / 2
-      grid.rect(x = xC, y = yC, width = boxSize, height = boxSize, default.units = "points")
+      if (rounded) {
+        grid.roundrect(x = xC, y = yC, width = boxSize, height = boxSize, default.units = "points")
+      } else {
+        grid.rect(x = xC, y = yC, width = boxSize, height = boxSize, default.units = "points")
+      }
       grid.text(label = ifelse(is.na(sym$Symbol[chemRef[i]]), '', sym$Symbol[chemRef[i]]),
                 x = xC,
                 y = yC,

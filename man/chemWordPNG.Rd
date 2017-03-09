@@ -6,7 +6,7 @@
 \usage{
 chemWordPNG(w, sym = elements, line1 = c("Name", "center"),
   line2 = c("Atomic_Number", "center"), line3 = c("Atomic_Mass", "center"),
-  additional = NULL, f = "chemWord.png")
+  additional = NULL, rounded = FALSE, f = "chemWord.png")
 }
 \arguments{
 \item{w}{Character.  A word to convert to chemical elements}
@@ -25,6 +25,8 @@ output set it to c(NA, NA)}
 \item{additional}{Data Frame.  Optional additional element table.  Data frame which must
 have a \code{Symbol} column containing the chemical symbol and can also contain
 \code{Atomic_Number}, \code{Name} and \code{Atomic_Mass} for inclusion in the PNG}
+
+\item{rounded}{Boolean.  Rounded box corners}
 
 \item{f}{Character.  Filename for output file (including path)}
 }
