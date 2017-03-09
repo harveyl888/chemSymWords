@@ -4,12 +4,23 @@
 \alias{chemWordPNG}
 \title{Create a PNG representation using chemical elements}
 \usage{
-chemWordPNG(w, sym = elements, additional = NULL, f = "chemWord.png")
+chemWordPNG(w, sym = elements, line1 = c("Name", "center"),
+  line2 = c("Atomic_Number", "center"), line3 = c("Atomic_Mass", "center"),
+  additional = NULL, f = "chemWord.png")
 }
 \arguments{
 \item{w}{Character.  A word to convert to chemical elements}
 
 \item{sym}{Data Frame.  A data frame containing chemical information.  Defaults to elements}
+
+\item{line1}{Vector containing two elements.  Top row label description.  First element
+corresponds to a column ID in the \code{sym} data frame.  Second element corresponds
+to the horizontal positioning (left, right, center).  To remove this line from the PNG
+output set it to c(NA, NA)}
+
+\item{line2}{Vector containing two elements.  Second row label description.  See \code{line1} description}
+
+\item{line3}{Vector containing two elements.  Bottom row label description.  See \code{line1} description}
 
 \item{additional}{Data Frame.  Optional additional element table.  Data frame which must
 have a \code{Symbol} column containing the chemical symbol and can also contain

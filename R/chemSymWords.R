@@ -70,6 +70,12 @@ chemWordRecurse <- function(w, t, sym=elements) {
 #'
 #' @param w Character.  A word to convert to chemical elements
 #' @param sym Data Frame.  A data frame containing chemical information.  Defaults to elements
+#' @param line1 Vector containing two elements.  Top row label description.  First element
+#'   corresponds to a column ID in the \code{sym} data frame.  Second element corresponds
+#'   to the horizontal positioning (left, right, center).  To remove this line from the PNG
+#'   output set it to c(NA, NA)
+#' @param line2 Vector containing two elements.  Second row label description.  See \code{line1} description
+#' @param line3 Vector containing two elements.  Bottom row label description.  See \code{line1} description
 #' @param additional Data Frame.  Optional additional element table.  Data frame which must
 #'   have a \code{Symbol} column containing the chemical symbol and can also contain
 #'   \code{Atomic_Number}, \code{Name} and \code{Atomic_Mass} for inclusion in the PNG
@@ -81,8 +87,22 @@ chemWordRecurse <- function(w, t, sym=elements) {
 #' @importFrom dplyr bind_rows
 #'
 #' @export
-chemWordPNG <- function(w, sym=elements, additional=NULL, f='chemWord.png') {
+chemWordPNG <- function(w,
+                        sym=elements,
+                        line1=c('Name', 'center'),
+                        line2=c('Atomic_Number', 'center'),
+                        line3=c('Atomic_Mass', 'center'),
+                        additional=NULL,
+                        f='chemWord.png') {
   if (!is.null(additional)) sym <- bind_rows(additional, sym)  ## add additional elements
+
+  l.text <- list(line1, line2, line3)
+  l.text <- lapply(l.text, function(x) {
+    if (!x[1] %in% names(sym)) x[1] <- NA
+    if (!x[2] %in% c('left', 'right', 'centre', 'center')) x[2] <- 'center'
+    x
+  })
+
   symbolList <- chemWordRecurse(w, list(), sym$Symbol)
   if (length(symbolList) == 0) {
     return(FALSE)
@@ -96,7 +116,7 @@ chemWordPNG <- function(w, sym=elements, additional=NULL, f='chemWord.png') {
     grid.newpage()
     pushViewport(vp)
 
-    for (i in 1:nboxes) {
+    for (i in 1:nboxes) {  ## loop through each identified symbol
       xC <- boxSize / 2 + (i-1)*boxSize + ((i-1)*2+1)*0.03*boxSize
       yC <- boxSize / 2
       grid.rect(x = xC, y = yC, width = boxSize, height = boxSize, default.units = "points")
@@ -106,22 +126,28 @@ chemWordPNG <- function(w, sym=elements, additional=NULL, f='chemWord.png') {
                 just = c('center', 'center'),
                 default.units = "points",
                 gp=gpar(col='black', fontsize = 0.33 * boxSize))  ## Chemical Symbol
-      xTop <- xC - boxSize * 0.45
-      yTop <- boxSize * 0.9
-      grid.text(label = ifelse(is.na(sym$Atomic_Number[chemRef[i]]), '', sym$Atomic_Number[chemRef[i]]),
-                x = xTop,
-                y = yTop,
-                just = c('left', 'center'),
-                default.units = 'points',
-                gp = gpar(col = 'black', fontsize = 0.15 * boxSize))  ## top line - atomic number
-      xBottom <- xC
-      yBottom <- boxSize * 0.15
-      grid.text(label = ifelse(is.na(sym$Name[chemRef[i]]), '', sym$Name[chemRef[i]]),
-                x = xBottom,
-                y = yBottom,
-                just = c('center', 'center'),
-                default.units = 'points',
-                gp = gpar(col = 'black', fontsize = 0.15 * boxSize))  ## bottom line - name
+      lapply(seq_along(l.text), function(x) {  ## Apply other labels
+        if(l.text[[x]][2] == 'left') {
+          xText <- xC - boxSize * 0.45
+        } else if (l.text[[x]][2] == 'right') {
+          xText <- xC + boxSize * 0.45
+        } else {
+          xText <- xC
+        }
+        if (x == 1) {
+          yText <- boxSize * 0.9
+        } else if (x == 2) {
+          yText <- boxSize * 0.75
+        } else {
+          yText <- boxSize * 0.15
+        }
+        grid.text(label = ifelse(is.na(l.text[[x]][1]), '', sym[[l.text[[x]][1]]][chemRef[i]]),
+                  x = xText,
+                  y = yText,
+                  just = c(l.text[[x]][2], 'center'),
+                  default.units = 'points',
+                  gp = gpar(col = 'black', fontsize = 0.15 * boxSize))  ## top line - atomic number
+      })
     }
     dev.off()
     return(TRUE)
