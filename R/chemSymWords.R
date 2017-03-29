@@ -168,7 +168,7 @@ chemWordPNG <- function(w,
         } else {
           yText <- boxSize * 0.15
         }
-        grid.text(label = ifelse(is.na(l.text[[x]][1]), '', sym[[l.text[[x]][1]]][chemRef[i]]),
+        grid.text(label = ifelse(is.na(sym[[l.text[[x]][1]]][chemRef[i]]), '', sym[[l.text[[x]][1]]][chemRef[i]]),
                   x = xText,
                   y = yText,
                   just = c(l.text[[x]][2], 'center'),
